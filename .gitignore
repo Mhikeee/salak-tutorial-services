@@ -1,0 +1,24 @@
+.worktrees/
+
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+.wrangler/
+.sanity/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
