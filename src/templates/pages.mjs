@@ -60,11 +60,6 @@ export function ratesPage() {
   return layout({ title: 'Rates', path: '/rates/', body });
 }
 
-export function tutorsPage() {
-  const body = `${pageHero('Our tutors', 'Patient guides for real school-day challenges.', 'We match learners with tutors based on year level, subject need, learning goals, schedule, and delivery mode.', actions)}<section class="section"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">What matters in a match</p><h2>More than subject knowledge.</h2></div><p>A strong tutoring relationship also needs clear explanations, preparation, patience, and dependable communication.</p></div><div class="quality-grid"><article><strong>01</strong><h3>Prepared</h3><p>Sessions respond to the learner's current materials and goals.</p></article><article><strong>02</strong><h3>Patient</h3><p>Questions are welcomed and ideas are explained in manageable steps.</p></article><article><strong>03</strong><h3>Encouraging</h3><p>Progress is recognized while learners are challenged appropriately.</p></article><article><strong>04</strong><h3>Accountable</h3><p>Schedules, expectations, and parent communication remain clear.</p></article></div></div></section>`;
-  return layout({ title: 'Our Tutors', path: '/tutors/', body });
-}
-
 export function testimonialsPage() {
   const body = `${pageHero('Family stories', 'The moments of progress that matter.', 'This page is ready for verified stories from Salak parents and learners. We will publish testimonials only with permission.', actions)}<section class="section"><div class="wrap quote-grid"><blockquote><p>&ldquo;Add a short, specific parent story here after consent is received.&rdquo;</p><footer>Verified parent testimonial</footer></blockquote><blockquote><p>&ldquo;Share what changed for the learner, not just a general compliment.&rdquo;</p><footer>Verified learner story</footer></blockquote><blockquote><p>&ldquo;A useful story can describe confidence, consistency, or a clearer learning routine.&rdquo;</p><footer>Verified family experience</footer></blockquote></div></section>`;
   return layout({ title: 'Family Stories', path: '/testimonials/', body });

@@ -1,7 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { aboutPage, bookPage, contactPage, enrollPage, faqPage, homePage, onlinePage, paymentPage, policyPage, ratesPage, servicesPage, testimonialsPage, thankYouPage, tutorsPage } from '../src/templates/pages.mjs';
+import { aboutPage, bookPage, contactPage, enrollPage, faqPage, homePage, onlinePage, paymentPage, policyPage, ratesPage, servicesPage, testimonialsPage, thankYouPage } from '../src/templates/pages.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const routes = new Map([
@@ -10,7 +10,6 @@ const routes = new Map([
   ['services/index.html', servicesPage],
   ['online-tutoring/index.html', onlinePage],
   ['rates/index.html', ratesPage],
-  ['tutors/index.html', tutorsPage],
   ['testimonials/index.html', testimonialsPage],
   ['book/index.html', bookPage],
   ['enroll/index.html', enrollPage],

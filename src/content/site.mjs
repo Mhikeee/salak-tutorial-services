@@ -13,7 +13,6 @@ export const navigation = [
   ['Tutorials', '/services/'],
   ['Online Tutoring', '/online-tutoring/'],
   ['Rates', '/rates/'],
-  ['Our Tutors', '/tutors/'],
   ['FAQs', '/faq/'],
 ];
 

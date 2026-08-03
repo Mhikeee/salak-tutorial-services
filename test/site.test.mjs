@@ -11,7 +11,6 @@ const routes = [
   "services/index.html",
   "online-tutoring/index.html",
   "rates/index.html",
-  "tutors/index.html",
   "testimonials/index.html",
   "book/index.html",
   "enroll/index.html",
@@ -23,6 +22,14 @@ const routes = [
   "payment/local/index.html",
   "thank-you/index.html"
 ];
+
+test("copies the canonical replacement logo into the build", async () => {
+  const output = await mkdtemp(join(tmpdir(), "salak-logo-"));
+  await buildSite(output);
+  const source = await readFile(join(process.cwd(), "elements", "logo.png"));
+  const built = await readFile(join(output, "assets", "logo.png"));
+  assert.deepEqual(built, source);
+});
 
 test("builds every approved public route", async () => {
   const output = await mkdtemp(join(tmpdir(), "salak-site-"));
@@ -53,6 +60,15 @@ test("home mirrors the reference hierarchy with Salak content", async () => {
     previous = position;
   }
   assert.doesNotMatch(html, /Tutorial Hub PH|Tutors From UP/);
+  assert.doesNotMatch(html, /href="\/tutors\/"|>Our Tutors</);
+});
+
+test("does not publish the retired tutor route", async () => {
+  const output = await mkdtemp(join(tmpdir(), "salak-no-tutors-"));
+  await buildSite(output);
+  await assert.rejects(readFile(join(output, "tutors", "index.html")), { code: "ENOENT" });
+  const sitemap = await readFile(join(output, "sitemap.xml"), "utf8");
+  assert.doesNotMatch(sitemap, /\/tutors\//);
 });
 
 test("rates explain hourly focus and monthly all-subject support", async () => {
