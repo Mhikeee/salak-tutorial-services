@@ -1,0 +1,16 @@
+{
+  "name": "salak-tutorial-services",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test",
+    "test:e2e": "node --test test/site.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "type": "module"
+}
