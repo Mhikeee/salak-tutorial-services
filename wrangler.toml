@@ -9,6 +9,7 @@ compatibility_date = "2026-08-03"
 NOTIFICATION_EMAIL = "salaktutorialservices@gmail.com"
 FROM_EMAIL = "salaktutorialservices@gmail.com"
 PUBLIC_SITE_URL = "https://salak-tutorial-services.pages.dev"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAESrfsNSPPooRhcG"
 
 [[d1_databases]]
 binding = "DB"

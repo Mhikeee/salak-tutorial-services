@@ -12,7 +12,7 @@ export const site = {
   hours: 'Monday-Saturday, 9:00 AM-7:00 PM',
   responseTime: 'within 24 hours',
   origin: (process.env.PUBLIC_SITE_URL || defaultOrigin).replace(/\/$/, ''),
-  turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '',
+  turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAESrfsNSPPooRhcG',
   description: 'Parent-trusted academic support from pre-school to senior high school, available in Naga City and online worldwide.',
 };
 

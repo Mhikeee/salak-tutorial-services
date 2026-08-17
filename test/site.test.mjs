@@ -178,3 +178,11 @@ test("uses the temporary Pages origin for canonical launch metadata", async () =
   assert.match(robots, /https:\/\/salak-tutorial-services\.pages\.dev\/sitemap\.xml/);
   assert.match(home, /property="og:image" content="https:\/\/salak-tutorial-services\.pages\.dev\/assets\/hero-photo\.jpg"/);
 });
+
+test("embeds the production Turnstile widget on protected forms", async () => {
+  const output = await mkdtemp(join(tmpdir(), "salak-turnstile-"));
+  await buildSite(output);
+  const enrollment = await readFile(join(output, "enroll/index.html"), "utf8");
+  assert.match(enrollment, /data-sitekey="0x4AAAAAAESrfsNSPPooRhcG"/);
+  assert.match(enrollment, /challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/);
+});
