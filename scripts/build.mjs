@@ -1,7 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { aboutPage, bookPage, contactPage, enrollPage, faqPage, homePage, onlinePage, paymentPage, policyPage, ratesPage, servicesPage, testimonialsPage, thankYouPage } from '../src/templates/pages.mjs';
+import { aboutPage, bookPage, checkoutPage, contactPage, enrollPage, faqPage, homePage, notFoundPage, onlinePage, paymentConfirmationPage, policyPage, ratesPage, servicesPage, testimonialsPage, thankYouPage } from '../src/templates/pages.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const routes = new Map([
@@ -13,13 +13,15 @@ const routes = new Map([
   ['testimonials/index.html', testimonialsPage],
   ['book/index.html', bookPage],
   ['enroll/index.html', enrollPage],
+  ['checkout/index.html', checkoutPage],
+  ['payment-confirmation/index.html', paymentConfirmationPage],
   ['faq/index.html', faqPage],
   ['contact/index.html', contactPage],
   ['privacy/index.html', () => policyPage('privacy')],
   ['terms/index.html', () => policyPage('terms')],
   ['payment-policy/index.html', () => policyPage('payment')],
-  ['payment/local/index.html', paymentPage],
   ['thank-you/index.html', thankYouPage],
+  ['404.html', notFoundPage],
 ]);
 
 export async function buildSite(outputDir = join(root, 'dist')) {
@@ -30,19 +32,22 @@ export async function buildSite(outputDir = join(root, 'dist')) {
     await mkdir(dirname(destination), { recursive: true });
     await writeFile(destination, render(), 'utf8');
   }
-  await cp(join(root, 'elements', 'logo.png'), join(outputDir, 'assets', 'logo.png'));
+  for (const asset of ['logo.png', 'hero-photo.jpg', 'center-session.jpg', 'center-location.jpg', 'tutors.jpg', 'testi1.png', 'testi2.png', 'testi3.png']) await cp(join(root, 'elements', asset), join(outputDir, 'assets', asset));
   await cp(join(root, 'public', 'styles.css'), join(outputDir, 'assets', 'styles.css'));
+  await cp(join(root, 'public', 'home-media.css'), join(outputDir, 'assets', 'home-media.css'));
   await cp(join(root, 'public', 'site.js'), join(outputDir, 'assets', 'site.js'));
-  await writeFile(join(outputDir, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: https://salaktutorialservices.com/sitemap.xml\n');
+  await cp(join(root, 'public', 'checkout.js'), join(outputDir, 'assets', 'checkout.js'));
+  const origin = (process.env.PUBLIC_SITE_URL || 'https://salaktutorialservices.pages.dev').replace(/\/$/, '');
+  await writeFile(join(outputDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
   await writeFile(join(outputDir, '_routes.json'), JSON.stringify({ version: 1, include: ['/api/*'], exclude: [] }, null, 2));
   await writeFile(join(outputDir, '_headers'), `/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: camera=(), geolocation=(), microphone=()
-  Content-Security-Policy: default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'
+  Content-Security-Policy: default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; img-src 'self' data:; connect-src 'self' https://challenges.cloudflare.com
 `);
-  const urls = [...routes.keys()].map((route) => `  <url><loc>https://salaktutorialservices.com/${route === 'index.html' ? '' : route.replace('index.html', '')}</loc></url>`).join('\n');
+  const urls = [...routes.keys()].filter((route) => route !== '404.html').map((route) => `  <url><loc>${origin}/${route === 'index.html' ? '' : route.replace('index.html', '')}</loc></url>`).join('\n');
   await writeFile(join(outputDir, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`);
   return outputDir;
 }

@@ -47,6 +47,7 @@ export function validateInquiry(input = {}) {
 
 export function validateBooking(input = {}) {
   const fieldErrors = contactErrors(input);
+  if (!['SMS', 'Facebook Messenger', 'Phone call'].includes(input.preferredContactMethod)) fieldErrors.preferredContactMethod = "Choose how you prefer to be contacted.";
   if (!Array.isArray(input.preferredSlots) || input.preferredSlots.length === 0) {
     fieldErrors.preferredSlots = "Add at least one preferred schedule.";
   } else if (input.preferredSlots.some((slot) => !required(slot.date) || !required(slot.time) || !required(slot.timeZone))) {
@@ -58,6 +59,10 @@ export function validateBooking(input = {}) {
 export function validateEnrollment(input = {}) {
   const fieldErrors = contactErrors(input);
   if (!required(input.studentName)) fieldErrors.studentName = "Student name is required.";
+  const learnerAge = Number(input.learnerAge);
+  if (!Number.isInteger(learnerAge) || learnerAge < 3 || learnerAge > 21) fieldErrors.learnerAge = "Enter the learner's age.";
+  if (!required(input.yearLevel)) fieldErrors.yearLevel = "Year level is required.";
+  if (input.policyConsent !== true) fieldErrors.policyConsent = "Agreement to the service and payment policies is required.";
   if (![MARKET.PHILIPPINES, MARKET.INTERNATIONAL].includes(input.market)) {
     fieldErrors.market = "Choose Philippine or international enrollment.";
   }

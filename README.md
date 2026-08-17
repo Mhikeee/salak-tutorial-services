@@ -4,10 +4,10 @@ An original, parent-first website for Salak Tutorial Services, inspired by the i
 
 ## What is included
 
-- 16 responsive public pages, including About, Services, Online Tutoring, Rates, Booking, Enrollment, Contact, FAQs, policies, and local payment reference submission.
+- Responsive public pages for About, Services, Online Tutoring, Rates, Booking, Enrollment, Contact, FAQs, testimonials, and policies.
 - Separate PHP and USD rate views.
-- Cloudflare Pages Functions for inquiries, bookings, enrollments, and payment references.
-- Cloudflare D1 storage with a migration and optional Resend email notifications.
+- Cloudflare Pages Functions for inquiries, enrollments, PayMongo PHP checkout, PayPal USD checkout, and automated payment confirmation.
+- Cloudflare D1 storage, automatic daily enrollment IDs, Brevo email notifications, and Cloudflare Turnstile protection.
 - A separate Sanity Studio schema scaffold for staff-friendly content editing in phase two.
 - Sitemap, robots file, structured data, metadata, keyboard-friendly navigation, and reduced-motion support.
 
@@ -25,9 +25,7 @@ Open `http://localhost:4321`. The local zero-dependency server previews the page
 
 ## Required details before launch
 
-Set `PUBLIC_CONTACT_EMAIL` and optionally `PUBLIC_CONTACT_PHONE` in the build environment. Without an email value, the site uses the inquiry form and does not print a made-up public address.
-
-Replace placeholder testimonials with verified family stories only after obtaining consent. Confirm the payment channel, scheduling/cancellation rules, and final privacy-policy wording before accepting payments.
+The approved contact details, policies, photos, and anonymous testimonials are included. Create the external accounts and variables listed in `.env.example` before enabling production forms.
 
 ## Free Cloudflare deployment
 
@@ -35,12 +33,13 @@ Replace placeholder testimonials with verified family stories only after obtaini
 2. In Cloudflare Pages, create a project from the repository.
 3. Set the build command to `npm run build` and the output directory to `dist`.
 4. Create a D1 database, then add it to the Pages project as a binding named `DB`.
-5. Apply `migrations/0001_submissions.sql` to that database from the Cloudflare dashboard or Wrangler CLI.
-6. Add encrypted environment variables: `RESEND_API_KEY`, `NOTIFICATION_EMAIL`, and `FROM_EMAIL`.
-7. Add build variables: `PUBLIC_CONTACT_EMAIL` and, if desired, `PUBLIC_CONTACT_PHONE`.
-8. Deploy, submit each form once, and verify both the D1 row and notification email.
+5. Apply all SQL files in `migrations/` in filename order.
+6. Create a free Brevo account, verify `salaktutorialservices@gmail.com` as a sender, then add encrypted variables `BREVO_API_KEY`, `NOTIFICATION_EMAIL`, and `FROM_EMAIL`.
+7. Create a Cloudflare Turnstile widget for the Pages hostname. Add `PUBLIC_TURNSTILE_SITE_KEY` as a build variable and `TURNSTILE_SECRET_KEY` as an encrypted variable.
+8. Set `PUBLIC_SITE_URL=https://salaktutorialservices.pages.dev`.
+9. Deploy, submit every form once, and verify the D1 row, Salak notification, parent confirmation, and enrollment ID.
 
-Resend's free tier can be used initially, but sender-domain verification is required for a branded `FROM_EMAIL`. Never commit API keys.
+Brevo may replace the technical From address when a free Gmail sender is used; replies still route through the configured reply-to address. Never commit API keys.
 
 ## Git connection and the earlier push error
 

@@ -37,7 +37,7 @@ test('rejects an invalid submission without writing or emailing', async () => {
   assert.equal(emailed, false);
 });
 
-test('accepts a payment reference without requiring a receipt image', async () => {
+test('rejects the retired public payment reference endpoint', async () => {
   const DB = mockDatabase();
   const response = await handleSubmission({
     kind: 'payment-references',
@@ -45,8 +45,8 @@ test('accepts a payment reference without requiring a receipt image', async () =
     env: { DB },
     fetcher: async () => new Response('{}', { status: 200 }),
   });
-  assert.equal(response.status, 200);
-  assert.equal(DB.calls.length, 1);
+  assert.equal(response.status, 404);
+  assert.equal(DB.calls.length, 0);
 });
 
 
