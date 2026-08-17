@@ -37,7 +37,7 @@ export async function buildSite(outputDir = join(root, 'dist')) {
   await cp(join(root, 'public', 'home-media.css'), join(outputDir, 'assets', 'home-media.css'));
   await cp(join(root, 'public', 'site.js'), join(outputDir, 'assets', 'site.js'));
   await cp(join(root, 'public', 'checkout.js'), join(outputDir, 'assets', 'checkout.js'));
-  const origin = (process.env.PUBLIC_SITE_URL || 'https://salaktutorialservices.pages.dev').replace(/\/$/, '');
+  const origin = (process.env.PUBLIC_SITE_URL || 'https://salak-tutorial-services.pages.dev').replace(/\/$/, '');
   await writeFile(join(outputDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
   await writeFile(join(outputDir, '_routes.json'), JSON.stringify({ version: 1, include: ['/api/*'], exclude: [] }, null, 2));
   await writeFile(join(outputDir, '_headers'), `/*

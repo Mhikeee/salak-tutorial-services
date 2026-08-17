@@ -1,7 +1,7 @@
 import { RATE_PLANS } from '../../packages/contracts/src/index.mjs';
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
-const origin = (env) => (env.PUBLIC_SITE_URL || 'https://salaktutorialservices.pages.dev').replace(/\/$/, '');
+const origin = (env) => (env.PUBLIC_SITE_URL || 'https://salak-tutorial-services.pages.dev').replace(/\/$/, '');
 
 async function enrollment(DB, enrollmentId) {
   const row = await DB.prepare("SELECT enrollment_id, payload FROM submissions WHERE kind = 'enrollments' AND enrollment_id = ?").bind(enrollmentId).first();

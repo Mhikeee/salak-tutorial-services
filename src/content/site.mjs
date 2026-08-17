@@ -1,4 +1,4 @@
-const defaultOrigin = 'https://salaktutorialservices.pages.dev';
+const defaultOrigin = 'https://salak-tutorial-services.pages.dev';
 
 export const site = {
   name: 'SALAK TUTORIAL SERVICES',

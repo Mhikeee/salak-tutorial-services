@@ -174,7 +174,7 @@ test("uses the temporary Pages origin for canonical launch metadata", async () =
   const sitemap = await readFile(join(output, "sitemap.xml"), "utf8");
   const robots = await readFile(join(output, "robots.txt"), "utf8");
   const home = await readFile(join(output, "index.html"), "utf8");
-  assert.match(sitemap, /https:\/\/salaktutorialservices\.pages\.dev/);
-  assert.match(robots, /https:\/\/salaktutorialservices\.pages\.dev\/sitemap\.xml/);
-  assert.match(home, /property="og:image" content="https:\/\/salaktutorialservices\.pages\.dev\/assets\/hero-photo\.jpg"/);
+  assert.match(sitemap, /https:\/\/salak-tutorial-services\.pages\.dev/);
+  assert.match(robots, /https:\/\/salak-tutorial-services\.pages\.dev\/sitemap\.xml/);
+  assert.match(home, /property="og:image" content="https:\/\/salak-tutorial-services\.pages\.dev\/assets\/hero-photo\.jpg"/);
 });

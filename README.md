@@ -36,7 +36,7 @@ The approved contact details, policies, photos, and anonymous testimonials are i
 5. Apply all SQL files in `migrations/` in filename order.
 6. Create a free Brevo account, verify `salaktutorialservices@gmail.com` as a sender, then add encrypted variables `BREVO_API_KEY`, `NOTIFICATION_EMAIL`, and `FROM_EMAIL`.
 7. Create a Cloudflare Turnstile widget for the Pages hostname. Add `PUBLIC_TURNSTILE_SITE_KEY` as a build variable and `TURNSTILE_SECRET_KEY` as an encrypted variable.
-8. Set `PUBLIC_SITE_URL=https://salaktutorialservices.pages.dev`.
+8. Set `PUBLIC_SITE_URL=https://salak-tutorial-services.pages.dev`.
 9. Deploy, submit every form once, and verify the D1 row, Salak notification, parent confirmation, and enrollment ID.
 
 Brevo may replace the technical From address when a free Gmail sender is used; replies still route through the configured reply-to address. Never commit API keys.

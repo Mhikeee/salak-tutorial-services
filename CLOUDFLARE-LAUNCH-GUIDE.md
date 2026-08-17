@@ -185,7 +185,7 @@ The webhook allows the website to confirm PHP payments automatically.
 2. Create a webhook with this address:
 
 ```text
-https://salak-tutorial-services.pages.dev/api/webhooks/paymongo
+https://salak-tutorial-services.pages.dev/api/webhooks-paymongo
 ```
 
 3. Enable the relevant successful and failed checkout/payment events.
