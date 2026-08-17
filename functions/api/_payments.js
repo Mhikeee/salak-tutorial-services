@@ -9,22 +9,29 @@ async function enrollment(DB, enrollmentId) {
   return { enrollmentId: row.enrollment_id, ...JSON.parse(row.payload) };
 }
 
-function quote(enrollmentData, paymentOption = 'full') {
+export function calculatePaymentQuote(enrollmentData, options = {}) {
+  let { paymentOption = 'full', hours = 1 } = options;
   const plan = RATE_PLANS.find((item) => item.id === enrollmentData.ratePlanId);
   if (!plan) throw new Error('Enrollment plan is invalid.');
   const international = enrollmentData.market === 'international';
   const currency = international ? 'USD' : 'PHP';
-  let amount = international ? plan.usd : plan.php;
+  const baseAmount = international ? plan.usd : plan.php;
+  const isHourly = plan.id === 'hourly';
+  if (isHourly && (!Number.isSafeInteger(hours) || hours < 1)) {
+    throw new Error('Choose a whole number of hours starting from 1.');
+  }
+  if (!isHourly) hours = plan.hours;
+  let amount = isHourly ? baseAmount * hours : baseAmount;
   const depositAllowed = !international && plan.id.startsWith('monthly-');
   if (paymentOption === 'deposit' && depositAllowed) amount /= 2;
   else paymentOption = 'full';
-  return { plan, currency, amount, paymentOption, provider: international ? 'paypal' : 'paymongo', depositAllowed };
+  return { plan, currency, baseAmount, amount, hours, isHourly, paymentOption, provider: international ? 'paypal' : 'paymongo', depositAllowed };
 }
 
 async function insertPayment(env, enrollmentId, quoteData) {
   const id = crypto.randomUUID();
-  await env.DB.prepare('INSERT INTO payments (id, enrollment_id, provider, currency, amount, payment_option, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, enrollmentId, quoteData.provider, quoteData.currency, Math.round(quoteData.amount * 100), quoteData.paymentOption, 'pending', new Date().toISOString()).run();
+  await env.DB.prepare('INSERT INTO payments (id, enrollment_id, provider, currency, amount, hours, payment_option, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, enrollmentId, quoteData.provider, quoteData.currency, Math.round(quoteData.amount * 100), quoteData.hours, quoteData.paymentOption, 'pending', new Date().toISOString()).run();
   return id;
 }
 
@@ -78,13 +85,13 @@ export async function paymentStatus(context) {
   const enrollmentId = url.searchParams.get('enrollmentId');
   const paymentId = url.searchParams.get('payment');
   if (paymentId) {
-    const row = await context.env.DB.prepare('SELECT id, enrollment_id, provider, currency, amount, payment_option, status, paid_at FROM payments WHERE id = ?').bind(paymentId).first();
+    const row = await context.env.DB.prepare('SELECT id, enrollment_id, provider, currency, amount, hours, payment_option, status, paid_at FROM payments WHERE id = ?').bind(paymentId).first();
     return row ? json({ ...row, amount: row.amount / 100 }) : json({ error: 'Payment not found.' }, 404);
   }
   const data = await enrollment(context.env.DB, enrollmentId);
   if (!data) return json({ error: 'Enrollment not found.' }, 404);
-  const calculated = quote(data);
-  return json({ enrollmentId, guardianName: data.guardianName, plan: calculated.plan.label, currency: calculated.currency, amount: calculated.amount, provider: calculated.provider, depositAllowed: calculated.depositAllowed });
+  const calculated = calculatePaymentQuote(data);
+  return json({ enrollmentId, guardianName: data.guardianName, plan: calculated.plan.label, currency: calculated.currency, baseAmount: calculated.baseAmount, amount: calculated.amount, hours: calculated.hours, isHourly: calculated.isHourly, provider: calculated.provider, depositAllowed: calculated.depositAllowed });
 }
 
 export async function createPayment(context) {
@@ -92,7 +99,12 @@ export async function createPayment(context) {
   const input = await context.request.json().catch(() => ({}));
   const data = await enrollment(context.env.DB, input.enrollmentId);
   if (!data) return json({ error: 'Enrollment not found.' }, 404);
-  const calculated = quote(data, input.paymentOption);
+  let calculated;
+  try {
+    calculated = calculatePaymentQuote(data, { paymentOption: input.paymentOption, hours: input.hours });
+  } catch (error) {
+    return json({ error: error.message }, 400);
+  }
   const paymentId = await insertPayment(context.env, input.enrollmentId, calculated);
   try {
     const checkoutUrl = calculated.provider === 'paymongo'
